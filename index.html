@@ -105,14 +105,15 @@ paid.addEventListener("click",function(){
 paid.hidden=true;msg.className="msg";msg.innerHTML='<span class="spin"></span>Ověřuji platbu…';
 setTimeout(function(){msg.className="msg ok";msg.textContent="Platba prošla";get.hidden=false;get.focus()},4000);
 });
-get.addEventListener("click",async function(){
+get.addEventListener("click",function(){
 try{
-var dl=await claude.use("downloads");
-if(!dl){msg.className="msg";msg.textContent="Uložení tady nejde. Otevři stránku v prohlížeči a zkus to znovu.";return}
-await dl.save({filename:"jak-delat-kratka-videa-s-ai.pdf",data:blob()});
-msg.textContent="Návod je uložený. Díky za koupi!";
+var u=URL.createObjectURL(blob()),l=document.createElement("a");
+l.href=u;l.download="jak-delat-kratka-videa-s-ai.pdf";l.style.display="none";
+document.body.appendChild(l);l.click();
+setTimeout(function(){document.body.removeChild(l);URL.revokeObjectURL(u)},4000);
+msg.className="msg";msg.textContent="Návod se stahuje. Najdeš ho ve složce Stažené soubory. Díky za koupi!";
 }catch(e){
-msg.className="msg";msg.textContent=(e&&e.code==="declined")?"Uložení jsi zrušil. Klepni znovu na Stáhnout návod.":"Uložení se nepovedlo. Zkus to prosím znovu.";
+msg.className="msg";msg.textContent="Stažení se nepovedlo. Otevři stránku v Chrome a zkus to znovu.";
 }
 });
 })();
